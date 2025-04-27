@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/damia/Desktop/repos/Sudoku/cmake-build-debug"
+			"value" : "c:/Users/Damian/Desktop/repozytoria git/Sudoku/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -431,7 +431,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/damia/Desktop/repos/Sudoku/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/Damian/Desktop/repozytoria git/Sudoku/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/damia/Desktop/repos/Sudoku"
+			"value" : "C:/Users/Damian/Desktop/repozytoria git/Sudoku"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1147,7 +1147,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/damia/Desktop/repos/Sudoku/cmake-build-debug"
+			"value" : "C:/Users/Damian/Desktop/repozytoria git/Sudoku/cmake-build-debug"
 		},
 		{
 			"name" : "sudoku_IS_TOP_LEVEL",
@@ -1171,7 +1171,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/damia/Desktop/repos/Sudoku"
+			"value" : "C:/Users/Damian/Desktop/repozytoria git/Sudoku"
 		}
 	],
 	"kind" : "cache",
