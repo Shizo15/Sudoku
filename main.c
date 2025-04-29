@@ -3,7 +3,37 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <string.h>
 
+void clearInputBuffer();
+int selectBoardSize();
+int selectDifficulty();
+void printInstructions();
+void startNewGame();
+void saveGame();
+void loadGame();
+void printMainMenu();
+void printGameMenu();
+void clearScreen();
+
+bool isSafeInBox(int n, int grid[n][n], int rowStart, int colStart, int num);
+void fillBox(int n, int grid[n][n], int row, int col);
+bool isSafeInRow(int n, int grid[n][n], int i, int num);
+bool isSafeInCol(int n, int grid[n][n], int j, int num);
+bool checkIfSafe(int n, int grid[n][n], int i, int j, int num);
+void fillDiagonal(int n, int grid[n][n]);
+bool fillRemaining(int n, int grid[n][n], int i, int j);
+void removeKDigits(int n, int grid[n][n], int k);
+void sudokuGenerator(int n, int grid[n][n], int k);
+void printBoard(int n, int grid[n][n]);
+void gameLoop(int n, int grid[n][n], int initialGrid[n][n]);
+bool makeMove(int n, int grid[n][n], int initialGrid[n][n]);
+bool isHintCell(int n, int initialGrid[n][n], int row, int col);
+
+void clearScreen()
+{
+    system("cls");
+}
 
 void clearInputBuffer() {
     while (getchar() != '\n');
@@ -58,7 +88,7 @@ int selectDifficulty()
             case 1: return 4;
             case 2: return 9;
             case 3: return 16;
-            case 4: return 0; // Back to main menu
+            case 4: return 0;
             default:
                 printf("Invalid choice. Please select 1-4.\n");
         }
@@ -66,49 +96,150 @@ int selectDifficulty()
 }
 void printInstructions()
 {
+    // printf("\n=== SUDOKU INSTRUCTIONS ===\n");
+    // printf("1. Start new game\n");
+    // printf("2. Choose board size\n");
+    // printf("3. Choose difficulty\n");
+    // printf("4. Fill the grid so that every row, column and box\n");
+    // printf("   contains all digits from 1 to N (where N is grid size)\n");
+    // printf("5. To make a move, enter row, column and value\n");
+    // printf("6. To remove a value, enter 0 as value\n");
+    // printf("7. Some cells are pre-filled (hints) - you can't change them\n\n");
+
+    clearScreen();
     printf("\n=== SUDOKU INSTRUCTIONS ===\n");
-    printf("1. Start new game\n");
-    printf("2. Choose board size\n");
-    printf("3. Choose difficulty\n");
-    printf("4. Fill the grid so that every row, column and box\n");
+    printf("1. Fill the grid so that every row, column and box\n");
     printf("   contains all digits from 1 to N (where N is grid size)\n");
-    printf("5. To make a move, enter row, column and value\n");
-    printf("6. To remove a value, enter 0 as value\n");
-    printf("7. Some cells are pre-filled (hints) - you can't change them\n\n");
-    //TODO
-    // Napisać jakieś podstawowe instrukcje jak obsugiwać grę
+    printf("2. To make a move, enter row, column and value\n");
+    printf("3. To remove a value, enter 0 as value\n");
+    printf("4. Some cells are pre-filled (hints) - you can't change them\n");
+    printf("\nPress Enter to continue...");
+    clearInputBuffer();
+    getchar();
+
 
 }
 void startNewGame()
 {
+    clearScreen();
     int boardSize = selectBoardSize();
+    if (boardSize==0) return;
+
+    clearScreen();
     int difficulty = selectDifficulty();
-    //TODO
-    // Zrobić mechanizm inicjalizacji planszy do sudoku o podanym wymiarze
-    // potem następną fukncją wypełnić planszę liczbami zgodnie z rozmiarem i wybranym poziomem trudności
+    if (difficulty==4) return;
 
     //Number of cells to remove
     int k;
     switch (difficulty) {
-        case 1: k = boardSize * boardSize / 2; break;    // Easy
-        case 2: k = boardSize * boardSize * 2 / 3; break; // Medium
-        case 3: k = boardSize * boardSize * 3 / 4; break; // Hard
-        default: k = boardSize * boardSize / 2;
+        case 1:
+            k = boardSize * boardSize / 2; break;    // Easy
+        case 2:
+            k = boardSize * boardSize * 2 / 3; break; // Medium
+        case 3:
+            k = boardSize * boardSize * 3 / 4; break; // Hard
+        default:
+            k = boardSize * boardSize / 2;
     }
 
-    printf("\nStarting new game.\n");
-
     int grid[boardSize][boardSize];
+    int initialGrid[boardSize][boardSize]; //original hints
 
-    //todo
-    // chyba trzena funkcje wcześniej zainicjować bo jak są stworzone później to ich nie widzi
+    sudokuGenerator(boardSize, grid, k);
+    memcpy(initialGrid, grid,sizeof(initialGrid));
 
-    //sudokuGenerator();
-    //printBoard();
+    clearScreen();
+    printf("\n=== NEW GAME STARTED ===\n");
+    printf("Size: %dx%d | Difficulty: %d\n\n", boardSize, boardSize, difficulty);
+    printBoard(boardSize, grid);
+
+    gameLoop(boardSize, grid, initialGrid);
+
 }
-void saveGame()
+bool isHintCell(int n, int initialGrid[n][n], int row, int col)
+{
+    return initialGrid[row][col] != 0;
+}
+
+bool makeMove(int n, int grid[n][n], int initialGrid[n][n])
+{
+    int row, col, num;
+
+    printf("Enter row, column and value (1-%d) or 0 to clear: ",n);
+    if (scanf("%d %d %d",&row, &col, &num) != 3)
+    {
+        clearInputBuffer();
+        return false;
+    }
+
+    if(row < 1 || row > n || col < 1 || col > n) {
+        return false;
+    }
+
+    if(num < 0 || num > n) {
+        return false;
+    }
+
+    row--;
+    col--;
+
+    if (isHintCell(n, initialGrid, row, col)) {
+        printf("Cannot modify hint cells!\n");
+        return false;
+    }
+
+    grid[row][col] = num;
+    return true;
+}
+
+void gameLoop(int n, int grid[n][n], int initialGrid[n][n])
+{
+    int choice;
+    bool gameRunning = true;
+
+    while (gameRunning)
+    {
+        clearScreen();
+        printf("\n=== SUDOKU GAME ===\n");
+        printBoard(n, grid);
+        printGameMenu();
+
+        printf("Your choice: ");
+        if (scanf("%d", &choice) != 1)
+        {
+            clearInputBuffer();
+            printf("Invalid input. Please enter a number.\n");
+            continue;
+        }
+        switch (choice)
+        {
+            case 1:
+                if (!makeMove(n, grid, initialGrid))
+                {
+                    printf("Invalid move.\n");
+                }
+                break;
+            case 2:
+                saveGame(n, grid);
+                break;
+            case 3:
+                printInstructions();
+                break;
+            case 4:
+                gameRunning = false;
+                break;
+            default:
+                printf("Invalid choice. Please select 1-4.\n");
+        }
+
+    }
+}
+void saveGame(int n, int grid[n][n])
 {
     printf("\nGame saved successfully!\n");
+    printf("Press Enter to continue...");
+    clearInputBuffer();
+    getchar();
     //TODO
     // pomyśleć w jaki sposób zapisywać progress aktualnej rozgrywki do pliku
     // dodać też możlowść save'a do menu rozgrywki??
@@ -122,9 +253,6 @@ void loadGame()
     //
 }
 
-//TODO
-// pomyśleć jak obsługiwać ruchy gracza
-
 void printMainMenu()
 {
     int choice;
@@ -132,9 +260,8 @@ void printMainMenu()
         printf("\n=== SUDOKU MENU ===\n");
         printf("1. New Game\n");
         printf("2. Instructions\n");
-        printf("3. Save Game\n");
-        printf("4. Load Game\n");
-        printf("5. Exit\n");
+        printf("3. Load Game\n");
+        printf("4. Exit\n");
         printf("Your choice: ");
 
         if (scanf("%d", &choice) != 1) {
@@ -146,15 +273,24 @@ void printMainMenu()
         switch (choice) {
         case 1: startNewGame(); break;
         case 2: printInstructions(); break;
-        case 3: saveGame(); break;
-        case 4: loadGame(); break;
-        case 5:
+        case 3: loadGame(); break;
+        case 4:
             printf("\nGoodbye!\n");
             return;
         default:
-            printf("Invalid choice. Please select 1-5.\n");
+            printf("Invalid choice. Please select 1-4.\n");
         }
     }
+}
+void printGameMenu()
+{
+    printf("\n=== GAME MENU ===\n");
+    printf("1. Make a move\n");
+    printf("2. Save game\n");
+    printf("3. Show instructions\n");
+    printf("4. Back to main menu\n");
+    printf("Your choice: ");
+
 }
 
 
@@ -309,28 +445,15 @@ void printBoard(int n, int grid[n][n]) {
 
 int main(void)
 {
-    //poziomy trurdności to ilość wygenerowanych liczb na nowej planszy(podpowiedzi)
 
-    // zrobić menu główne i poboczne (do gry) z którego będzie można wykonywać ruchy i przejść do menu głównego
-    // jak obliczać liczbę podpowiedzi względem rozmiaru planszy i poziomu trudddności?
-    // zakres liczb zależy od wielkości planszy
     srand(time(0));
-
     printMainMenu();
 
-    // int k = 30;
-    // int sudoku[9][9];
+    //TODO
+    // zrobić statystyki gry - czas rozgrywki, pomyłki
+    // można dodać licznik ile zostało pustych miejsc
+    // zrobić zapisywanie progressu do pliku
+    // odczytywanie progressu z pliku
 
-    //sudokuGenerator(4, sudoku, k);
-
-
-    // // Print the generated Sudoku puzzle
-    // for (int i = 0; i < 9; i++) {
-    //     for (int j = 0; j < 9; j++) {
-    //         if (i%3 == 0 && j%3 == 0) {}
-    //         printf("%d ", sudoku[i][j]);
-    //     }
-    //     printf("\n");
-    // }
     return 0;
 }
