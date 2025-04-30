@@ -29,6 +29,8 @@ void printBoard(int n, int grid[n][n]);
 void gameLoop(int n, int grid[n][n], int initialGrid[n][n]);
 bool makeMove(int n, int grid[n][n], int initialGrid[n][n]);
 bool isHintCell(int n, int initialGrid[n][n], int row, int col);
+bool isBoardComplete(int n, int grid[n][n]);
+bool isSolutionCorrect(int n, int grid[n][n]);
 
 void clearScreen()
 {
@@ -129,6 +131,8 @@ void startNewGame()
     int difficulty = selectDifficulty();
     if (difficulty==4) return;
 
+    clearInputBuffer();
+
     //Number of cells to remove
     int k;
     switch (difficulty) {
@@ -194,6 +198,7 @@ bool makeMove(int n, int grid[n][n], int initialGrid[n][n])
 
 void gameLoop(int n, int grid[n][n], int initialGrid[n][n])
 {
+    time_t startTime = time(NULL);
     int choice;
     bool gameRunning = true;
 
@@ -201,7 +206,28 @@ void gameLoop(int n, int grid[n][n], int initialGrid[n][n])
     {
         clearScreen();
         printf("\n=== SUDOKU GAME ===\n");
+        printf("Size: %dx%d", n, n);
         printBoard(n, grid);
+
+        if (isBoardComplete(n, grid))
+        {
+            if (isSolutionCorrect(n, grid))
+            {
+                printf("\nCongratulations! You solved Sudoku\n");
+                time_t endTime = time(NULL);
+                printf("Time: %.0f seconds\n", difftime(endTime, startTime));
+                gameRunning = false;
+                printf("\nPress Enter to continue...");
+                clearInputBuffer();
+                getchar();
+                // continue;
+            }
+            else
+            {
+                printf("\nSome cells are incorrect. Keep trying.\n");
+            }
+        }
+
         printGameMenu();
 
         printf("Your choice: ");
@@ -232,6 +258,11 @@ void gameLoop(int n, int grid[n][n], int initialGrid[n][n])
                 printf("Invalid choice. Please select 1-4.\n");
         }
 
+    }
+    if (isSolutionCorrect(n, grid))
+    {
+        time_t endTime = time(NULL);
+        printf("Time: %.0f seconds \n", difftime(endTime, startTime));
     }
 }
 void saveGame(int n, int grid[n][n])
@@ -419,6 +450,9 @@ void sudokuGenerator(int n, int grid[n][n], int k) {
 }
 void printBoard(int n, int grid[n][n]) {
     int square = (int)sqrt(n);
+    int emptyCount = 0;
+
+    printf("\n");
     for (int i = 0; i < n; i++) {
         if (i % square == 0 && i != 0) {
             for (int j = 0; j < n + square - 1; j++) {
@@ -434,12 +468,84 @@ void printBoard(int n, int grid[n][n]) {
 
             if (grid[i][j] == 0) {
                 printf(" . ");
-            } else {
+                emptyCount++;
+            }
+            else {
                 printf("%2d ", grid[i][j]);
             }
         }
         printf("\n");
     }
+    printf("\nEmpty cells: %d", emptyCount);
+}
+
+bool isBoardComplete(int n, int grid[n][n])
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (grid[i][j] == 0)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+bool isSolutionCorrect(int n, int grid[n][n])
+{
+    if (!isBoardComplete(n, grid))
+    {
+        return false;
+    }
+
+    for (int i = 1; i <=n; i++)
+    {
+        for (int j = 0; j<=n; j++)
+        {
+            bool foundInRow = false;
+            bool foundInCol = false;
+            for (int k = 0; k<n; k++)
+            {
+                if (grid[j][k] == i)
+                {
+                    foundInRow = true;
+                }
+                if (grid[k][j] == i)
+                {
+                    foundInCol = true;
+                }
+            }
+            if (!foundInRow || !foundInCol)
+            {
+                return false;
+            }
+        }
+        int square = (int)sqrt(n);
+        for (int boxRow = 0; boxRow < n; boxRow+=square)
+        {
+            for (int boxCol = 0; boxCol < n; boxCol+=square)
+            {
+                bool foundInBox = false;
+                for (int l = 0; l < square; l++)
+                {
+                    for (int m = 0; m < square; m++)
+                    {
+                        if (grid[boxRow + l][boxCol+m] == i)
+                        {
+                            foundInBox = true;
+                        }
+                    }
+                }
+                if (!foundInBox)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 
