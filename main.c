@@ -520,7 +520,7 @@ void printBoard(int n, int grid[MAX_SIZE][MAX_SIZE]) {
         // Print horizontal divider between boxes
         if (i % square == 0 && i != 0) {
             for (int j = 0; j < n; j++) {
-                printf("----");
+                printf("---");
                 if (j % square == square - 1 && j != n - 1) {
                     printf("-");
                 }
