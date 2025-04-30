@@ -2,7 +2,7 @@
 *.iml
 
 cmake-build-*/
-
+sudoku.exe
 *.exe
 *.out
 *.o
