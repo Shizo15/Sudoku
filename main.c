@@ -235,10 +235,16 @@ void gameLoop(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX
                 printInstructions();
                 break;
             case 4:
+                solveWithSA(n, grid, initialGrid);
+                //printf("Press Enter to continue...");
+                // clearInputBuffer();
+                // getchar();
+                break;
+            case 5:
                 gameRunning = false;
                 break;
             default:
-                printf("Invalid choice. Please select 1-4.\n");
+                printf("Invalid choice. Please select 1-5.\n");
         }
 
         // Pause to let user see messages
@@ -376,7 +382,8 @@ void printGameMenu() {
     printf("1. Make a move\n");
     printf("2. Save game\n");
     printf("3. Show instructions\n");
-    printf("4. Back to main menu\n");
+    printf("4. Solve with Simulated Annealing\n");
+    printf("5. Back to main menu\n");
 }
 
 //Check if number is unique in sub-box

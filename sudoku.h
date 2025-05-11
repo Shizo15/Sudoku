@@ -34,6 +34,7 @@ bool makeMove(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX
 bool isHintCell(int n, int initialGrid[MAX_SIZE][MAX_SIZE], int row, int col);
 bool isBoardComplete(int n, int grid[MAX_SIZE][MAX_SIZE]);
 bool isSolutionCorrect(int n, int grid[MAX_SIZE][MAX_SIZE]);
+void solveWithSA(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX_SIZE]);
 
 
 #endif //SUDOKU_H
