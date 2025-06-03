@@ -1,10 +1,6 @@
-//
-// Created by damia on 30.04.2025.
-//
-
 #ifndef SUDOKU_H
 #define SUDOKU_H
-
+#include <stdbool.h>
 #define MAX_SIZE 16
 
 // Function declarations
@@ -19,13 +15,7 @@ void printMainMenu();
 void printGameMenu();
 void clearConsole();
 
-bool isSafeInBox(int n, int grid[MAX_SIZE][MAX_SIZE], int rowStart, int colStart, int num);
-void fillBox(int n, int grid[MAX_SIZE][MAX_SIZE], int row, int col);
-bool isSafeInRow(int n, int grid[MAX_SIZE][MAX_SIZE], int i, int num);
-bool isSafeInCol(int n, int grid[MAX_SIZE][MAX_SIZE], int j, int num);
-bool checkIfSafe(int n, int grid[MAX_SIZE][MAX_SIZE], int i, int j, int num);
-void fillDiagonal(int n, int grid[MAX_SIZE][MAX_SIZE]);
-bool fillRemaining(int n, int grid[MAX_SIZE][MAX_SIZE], int i, int j);
+
 void removeKDigits(int n, int grid[MAX_SIZE][MAX_SIZE], int k);
 void sudokuGenerator(int n, int grid[MAX_SIZE][MAX_SIZE], int k);
 void printBoard(int n, int grid[MAX_SIZE][MAX_SIZE]);
@@ -34,7 +24,14 @@ bool makeMove(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX
 bool isHintCell(int n, int initialGrid[MAX_SIZE][MAX_SIZE], int row, int col);
 bool isBoardComplete(int n, int grid[MAX_SIZE][MAX_SIZE]);
 bool isSolutionCorrect(int n, int grid[MAX_SIZE][MAX_SIZE]);
+
+void swapRowsGeneral(int n, int grid[MAX_SIZE][MAX_SIZE], int row1, int row2);
+void swapColsGeneral(int n, int grid[MAX_SIZE][MAX_SIZE], int col1, int col2);
+void swapNumbersGeneral(int n, int grid[MAX_SIZE][MAX_SIZE], int n1, int n2);
+void applyRandomTransformations(int n, int grid[MAX_SIZE][MAX_SIZE]);
+
 void solveWithSA(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX_SIZE]);
 
+void solveWithGA(int size, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX_SIZE]);
 
-#endif //SUDOKU_H
+#endif
