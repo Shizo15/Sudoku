@@ -21,9 +21,10 @@
   - Medium
   - Hard (fewer hints)
 - Text-based interface (terminal)
+- Random board generation for each game
 - Save and load game state
 - Validate solution correctness
-- Game timer, empty cell counter, and mistake tracker
+- Game timer empty and cell counter
 - Built-in help/instructions
 - Error handling and input validation
 
@@ -32,7 +33,7 @@
 You’ll need a C compiler (e.g. `gcc`). Make sure the `sudoku.h` header file is in the same directory. Open `cmd` or another terminal, navigate to the game folder, and run:
 
 ```bash
-gcc main.c -o sudoku.exe
+gcc main.c sasolver.c sudokuMenu.c GA/GA.c GA/GAinterface.c GA/crossovers.c GA/mutations.c GA/selections.c -o sudoku.exe
 
 sudoku.exe
 ```
@@ -45,13 +46,18 @@ sudoku.exe
    -  Make a move (enter row, column, and value separated by spaces)
    -  Save the game
    -  Show instructions
+   -  Solve the board using Simulated Annealing
+   -  Solve the board using Genetic Algorithm
 4. To clear a cell, enter `0` as the value.
 5. Some cells (hints) are locked and cannot be modified.
 
 ## ⚠️ Known Issues & Limitations
 - No validation for unique Sudoku solutions (a generated puzzle may have more than one valid solution).
-- The `clearConsole()` function is commented out and must be adjusted to your OS (`system("cls")` / `system("clear")`). Its use may cause issues.
 - No undo feature (you can overwrite a move or clear it by entering 0, but you can't revert it directly).
+- The implementation uses pre-defined base boards with permutations rather than:
+  - A proper backtracking algorithm for generation
+  - Validation of solution uniqueness after digit removal
+
 
 Memiki budowlane na poprawę humoru :)
 

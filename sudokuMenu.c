@@ -68,7 +68,6 @@ int selectDifficulty() {
 }
 
 void printInstructions() {
-    clearConsole();
     printf("\n=== SUDOKU INSTRUCTIONS ===\n");
     printf("1. Fill the grid so that every row, column and box\n");
     printf("   contains all digits from 1 to N (where N is grid size)\n");
@@ -84,7 +83,6 @@ void printInstructions() {
 void printMainMenu() {
     int choice;
     do {
-        clearConsole();
         printf("\n=== SUDOKU GAME ===\n");
         printf("1. New Game\n");
         printf("2. Load Game\n");

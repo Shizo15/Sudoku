@@ -6,15 +6,6 @@
 #include <string.h>
 #include "sudoku.h"
 
-void clearConsole() {
-    // Optional: Uncomment if console clearing is needed
-    // #ifdef _WIN32
-    //     system("cls");
-    // #else
-    //     system("clear");
-    // #endif
-    fflush(stdout);
-}
 
 void clearInputBuffer() {
     while (getchar() != '\n');
@@ -92,7 +83,6 @@ void gameLoop(int n, int grid[MAX_SIZE][MAX_SIZE], int initialGrid[MAX_SIZE][MAX
     bool gameRunning = true;
 
     while (gameRunning) {
-        clearConsole();
         printf("\n=== SUDOKU GAME ===\n");
         printf("Size: %dx%d\n", n, n);
         printBoard(n, grid);
